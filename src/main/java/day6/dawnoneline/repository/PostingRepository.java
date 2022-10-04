@@ -12,12 +12,13 @@ public class PostingRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public Long save(Posting posting){
+    public Long save(Posting posting) {
         em.persist(posting);
         return posting.getId();
     }
 
-    public Posting find(Long id){
+    public Posting find(Long id) {
         return em.find(Posting.class, id);
     }
+
 }
