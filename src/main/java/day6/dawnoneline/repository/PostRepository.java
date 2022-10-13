@@ -1,5 +1,7 @@
 package day6.dawnoneline.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -17,4 +19,11 @@ public class PostRepository {
         return post.getId();
     }
 
+    public List<Post> findAll(Integer offset, Integer limit) {
+        return em.createQuery("SELECT p FROM Post p",
+                Post.class)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
+    }
 }
