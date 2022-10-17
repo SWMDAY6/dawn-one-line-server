@@ -4,7 +4,6 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
-
   h2:
     console:
       enabled: true
@@ -15,6 +14,10 @@ spring:
     hibernate:
       default_batch_fetch_size: 1000
       ddl-auto: update
+  #swagger2
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 logging:
   level:
     root: debug

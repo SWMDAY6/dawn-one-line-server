@@ -52,10 +52,10 @@ class PostRepositoryTest {
 
         Post post = new Post(content, password, latitude, longitude);
 
-        Comment comment1 = createComment("좋아요", "1234");
+        Comment comment1 = new Comment("좋아요", "1234");
         em.persist(comment1);
 
-        Comment comment2 = createComment("테스트 댓글입니다.", "1234");
+        Comment comment2 = new Comment("테스트 댓글입니다.", "1234");
         em.persist(comment2);
 
         post.addComments(comment1, comment2);
@@ -70,13 +70,6 @@ class PostRepositoryTest {
         Post Testpost = postList.get(postList.size() - 1);
         Assertions.assertEquals(Testpost.getContent(), content);
         Assertions.assertEquals(Testpost.getPassword(), password);
-    }
-
-    private Comment createComment(String content, String password) {
-        Comment comment = new Comment();
-        comment.setContent(content);
-        comment.setPassword(password);
-        return comment;
     }
 
     @Test

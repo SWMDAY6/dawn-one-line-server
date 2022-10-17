@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResultException.class)
     public String handleNoResultException(final NoResultException e) {
-        return "Post Id does not exist";
+        return "Input Id does not exist";
     }
 
     @ExceptionHandler(PropertyValueException.class)
