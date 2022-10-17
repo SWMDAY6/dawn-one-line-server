@@ -1,8 +1,11 @@
 package day6.dawnoneline.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import day6.dawnoneline.domain.Comment;
 import day6.dawnoneline.domain.Post;
+import day6.dawnoneline.service.PostService;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -22,6 +26,9 @@ class PostRepositoryTest {
 
     @Autowired
     EntityManager em;
+
+    @Autowired
+    PostService postService;
 
     @Autowired
     PostRepository postRepository;
@@ -33,18 +40,17 @@ class PostRepositoryTest {
 
     @Test
     @Transactional
-    @DisplayName("게시글 등록 테스트")
+    @DisplayName("게시글 등록 및 조회 테스트")
     @Rollback(value = false)
-    public void PostingTest() {
+    public void CreatePostTest() {
 
         // given
-        String content = "테스트 게시글입니다.";
+        String content = "테스트 게시글4입니다.";
         Double longitude = 127.11;
         Double latitude = 38.21;
         String password = "1234";
 
-        Post post = createPost(content, password, latitude, longitude);
-        em.persist(post);
+        Post post = new Post(content, password, latitude, longitude);
 
         Comment comment1 = createComment("좋아요", "1234");
         em.persist(comment1);
@@ -53,23 +59,17 @@ class PostRepositoryTest {
         em.persist(comment2);
 
         post.addComments(comment1, comment2);
-        em.persist(post);
+        Long postId = postRepository.createPost(post);
 
-        // // when
-        // Integer offset = 0;
-        // Integer limit = 100;
-        // List<Post> postList = postRepository.findAll(offset, limit);
-        // System.out.println("======= POST : " + postList + " ============");
-        //
-        // // then
-        // System.out.println("======== size : " + postList.size() + " =========");
-        // Post Testpost = postList.get(0);
-        // Assertions.assertEquals(Testpost.getContent(), content);
-        // Assertions.assertEquals(Testpost.getPassword(), password);
-    }
+        // when
+        Integer offset = 0;
+        Integer limit = 100;
+        List<Post> postList = postRepository.findAll(offset, limit);
 
-    private Post createPost(String content, String password, Double latitude, Double longitude) {
-        return new Post(content, password, latitude, longitude);
+        // then
+        Post Testpost = postList.get(postList.size() - 1);
+        Assertions.assertEquals(Testpost.getContent(), content);
+        Assertions.assertEquals(Testpost.getPassword(), password);
     }
 
     private Comment createComment(String content, String password) {
@@ -77,6 +77,12 @@ class PostRepositoryTest {
         comment.setContent(content);
         comment.setPassword(password);
         return comment;
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void deletePostTest() {
+        postService.deletePost(2L);
     }
 
     @AfterAll

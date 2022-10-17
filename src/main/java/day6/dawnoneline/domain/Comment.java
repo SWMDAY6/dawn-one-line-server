@@ -23,7 +23,7 @@ public class Comment extends TimeStamp {
     @Column(name = "comment_id")
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)

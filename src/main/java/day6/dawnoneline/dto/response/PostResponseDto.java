@@ -26,7 +26,7 @@ public class PostResponseDto {
     public PostResponseDto(Post post) {
         postId = post.getId();
         content = post.getContent();
-        password = getPassword();
+        password = post.getPassword();
         latitude = post.getLatitude();
         longitude = post.getLongitude();
         createdAt = post.getCreatedAt();
