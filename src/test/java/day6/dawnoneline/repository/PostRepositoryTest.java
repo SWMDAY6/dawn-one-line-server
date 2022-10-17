@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import day6.dawnoneline.domain.Comment;
 import day6.dawnoneline.domain.Post;
+import day6.dawnoneline.service.PostService;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -25,6 +26,9 @@ class PostRepositoryTest {
 
     @Autowired
     EntityManager em;
+
+    @Autowired
+    PostService postService;
 
     @Autowired
     PostRepository postRepository;
@@ -37,11 +41,11 @@ class PostRepositoryTest {
     @Test
     @Transactional
     @DisplayName("게시글 등록 및 조회 테스트")
-    @Rollback(value = true)
+    @Rollback(value = false)
     public void CreatePostTest() {
 
         // given
-        String content = "테스트 게시글입니다22.";
+        String content = "테스트 게시글4입니다.";
         Double longitude = 127.11;
         Double latitude = 38.21;
         String password = "1234";
@@ -73,6 +77,12 @@ class PostRepositoryTest {
         comment.setContent(content);
         comment.setPassword(password);
         return comment;
+    }
+
+    @Test
+    @Rollback(value = false)
+    public void deletePostTest() {
+        postService.deletePost(2L);
     }
 
     @AfterAll
