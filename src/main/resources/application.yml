@@ -15,7 +15,8 @@ spring:
     hibernate:
       default_batch_fetch_size: 1000
       ddl-auto: update
-  logging:
-    level:
-      org:
-        SQL: debug
+logging:
+  level:
+    root: debug
+    org:
+      hibernate.SQL: debug
