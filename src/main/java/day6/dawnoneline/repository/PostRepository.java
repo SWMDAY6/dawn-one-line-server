@@ -1,6 +1,8 @@
 package day6.dawnoneline.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,10 +22,23 @@ public class PostRepository {
     }
 
     public List<Post> findAll(Integer offset, Integer limit) {
-        return em.createQuery("SELECT p FROM Post p",
+        return em.createQuery("SELECT p FROM Post p "
+                    + "WHERE p.deletedAt is null",
                 Post.class)
             .setFirstResult(offset)
             .setMaxResults(limit)
             .getResultList();
+    }
+
+    public Optional<Post> findPostById(Long postId) {
+        return Optional.ofNullable(em.createQuery("SELECT p FROM Post p "
+                + "WHERE p.id = :postId "
+                + "AND p.deletedAt is null", Post.class)
+            .setParameter("postId", postId)
+            .getSingleResult());
+    }
+
+    public void deletePost(Post post) {
+        post.setDeletedAt(LocalDateTime.now());
     }
 }
