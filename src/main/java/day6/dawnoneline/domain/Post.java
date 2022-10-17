@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,12 +27,17 @@ public class Post extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
+
+    @ApiModelProperty(notes = "게시글 내용")
     @Column(nullable = false)
     private String content;
+
     @Column(nullable = false)
     private String password;
+
     @Column(nullable = false)
     private Double latitude;
+
     @Column(nullable = false)
     private Double longitude;
 
