@@ -11,10 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "comment")
 public class Comment extends TimeStamp {
 
@@ -32,6 +35,12 @@ public class Comment extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @Builder
+    public Comment(String content, String password) {
+        this.content = content;
+        this.password = password;
+    }
 
     public void setContent(String content) {
         this.content = content;
