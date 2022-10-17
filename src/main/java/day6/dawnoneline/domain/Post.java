@@ -26,7 +26,7 @@ public class Post extends TimeStamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
-    @Column
+    @Column(nullable = false)
     private String content;
     @Column(nullable = false)
     private String password;
