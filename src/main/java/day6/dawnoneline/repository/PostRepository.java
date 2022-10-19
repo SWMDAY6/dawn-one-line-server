@@ -10,6 +10,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 import day6.dawnoneline.domain.Post;
+import day6.dawnoneline.dto.request.PostDistanceRequestDto;
 
 @Repository
 public class PostRepository {
@@ -30,6 +31,21 @@ public class PostRepository {
             .getResultList();
     }
 
+    public List<Post> findPostsByDistance(PostDistanceRequestDto postDistanceRequestDto) {
+        String query = "SELECT p FROM Post p "
+            + "WHERE p.deletedAt is null "
+            + "AND ST_Distance_Sphere(point(p.longitude,p.latitude), point(:x,:y)) <= :distance "
+            + "ORDER BY ST_Distance_Sphere(point(p.longitude,p.latitude), point(:x,:y))";
+
+        return em.createQuery(query, Post.class)
+            .setParameter("x", postDistanceRequestDto.getLongitude())
+            .setParameter("y", postDistanceRequestDto.getLatitude())
+            .setParameter("distance", postDistanceRequestDto.getDistance() * 1000)
+            .setFirstResult(postDistanceRequestDto.getOffset())
+            .setMaxResults(postDistanceRequestDto.getLimit())
+            .getResultList();
+    }
+
     public Optional<Post> findPostById(Long postId) {
         return Optional.ofNullable(em.createQuery("SELECT p FROM Post p "
                 + "WHERE p.id = :postId "
@@ -41,4 +57,5 @@ public class PostRepository {
     public void deletePost(Post post) {
         post.setDeletedAt(LocalDateTime.now());
     }
+
 }
