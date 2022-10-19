@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import day6.dawnoneline.domain.Comment;
 import day6.dawnoneline.domain.Post;
+import day6.dawnoneline.dto.request.PostDistanceRequestDto;
 import day6.dawnoneline.dto.request.PostSaveRequestDto;
 import day6.dawnoneline.dto.response.PostResponseDto;
 import day6.dawnoneline.repository.CommentRepository;
@@ -32,6 +33,11 @@ public class PostService {
     public List<PostResponseDto> findAll(Integer offset, Integer limit) {
         List<Post> findAllPostsEntity = postRepository.findAll(offset, limit);
         return postsEntityToDto(findAllPostsEntity);
+    }
+
+    public List<PostResponseDto> findPostsByDistance(PostDistanceRequestDto postDistanceRequestDto) {
+        List<Post> findPostsByDistanceEntity = postRepository.findPostsByDistance(postDistanceRequestDto);
+        return postsEntityToDto(findPostsByDistanceEntity);
     }
 
     public List<PostResponseDto> findPostsByIdList(List<Long> postIdList) {
