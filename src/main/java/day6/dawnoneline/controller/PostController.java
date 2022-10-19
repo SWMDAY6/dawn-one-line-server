@@ -37,19 +37,19 @@ public class PostController {
     @GetMapping("/boards/posts")
     @ApiOperation(value = "전체 게시글 조회")
     public List<PostResponseDto> findAll(
-        @ApiParam(value = "몇번째 행부터 출력할지 선택", required = false, example = "1") @RequestParam(value = "offset", defaultValue = "0") Integer offset,
-        @ApiParam(value = "출력할 행의 수", required = false, example = "100") @RequestParam(value = "limit", defaultValue = "100") Integer limit) {
+        @ApiParam(value = "몇번째 행부터 출력할지 선택", example = "1") @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+        @ApiParam(value = "출력할 행의 수", example = "100") @RequestParam(value = "limit", defaultValue = "100") Integer limit) {
         return postService.findAll(offset, limit);
     }
 
-    @GetMapping("/boards/posts/{distance}")
+    @GetMapping("/boards/posts/distance/{distance}")
     @ApiOperation(value = "입력한 km 내의 게시물 조회")
     public List<PostResponseDto> findPostsByDistance(
         @ApiParam(value = "조회할 km 거리", required = true, example = "5") @PathVariable Integer distance,
         @ApiParam(value = "유저 위도", required = true, example = "37.504135") @RequestParam("latitude") Double latitude,
         @ApiParam(value = "유저 경도", required = true, example = "127.044819") @RequestParam("longitude") Double longitude,
-        @ApiParam(value = "조회 시작할 행 인덱스", required = false, example = "0") @RequestParam(value = "offset", defaultValue = "0") Integer offset,
-        @ApiParam(value = "조회할 행의 수", required = false, example = "100") @RequestParam(value = "limit", defaultValue = "100") Integer limit) {
+        @ApiParam(value = "조회 시작할 행 인덱스", example = "0") @RequestParam(value = "offset", defaultValue = "0") Integer offset,
+        @ApiParam(value = "조회할 행의 수", example = "100") @RequestParam(value = "limit", defaultValue = "100") Integer limit) {
 
         PostDistanceRequestDto postDistanceRequestDto = new PostDistanceRequestDto(distance, latitude, longitude,
             offset, limit);
