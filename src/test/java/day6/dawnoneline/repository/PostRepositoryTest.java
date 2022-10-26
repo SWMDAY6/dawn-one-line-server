@@ -54,7 +54,7 @@ class PostRepositoryTest {
 
     @Test
     @Transactional
-    @DisplayName("게시글 등록 및 조회 테스트")
+    // @DisplayName("게시글 등록 및 조회 테스트")
     @Rollback(value = false)
     public void CreatePostTest() {
 
@@ -87,12 +87,7 @@ class PostRepositoryTest {
         // then
         Post Testpost = postList.get(postList.size() - 1);
         Assertions.assertEquals(Testpost.getContent(), content);
-        Assertions.assertEquals(Testpost.getPassword(), password);
-    }
-
-    @Test
-    public void deletePostTest() {
-        postService.deletePost(1L, "1234");
+        // Assertions.assertEquals(Testpost.getPassword(), password);
     }
 
     @Test
