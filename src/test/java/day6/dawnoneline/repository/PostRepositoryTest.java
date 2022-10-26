@@ -1,6 +1,7 @@
 package day6.dawnoneline.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 
@@ -12,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import day6.dawnoneline.domain.Comment;
 import day6.dawnoneline.domain.Post;
 import day6.dawnoneline.dto.request.CommentRequestDto;
 import day6.dawnoneline.dto.request.PostSaveRequestDto;
@@ -41,9 +44,12 @@ class PostRepositoryTest {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @BeforeAll
     public void setUp() {
-        System.out.println("======= Before =========");
+        log.debug("======= Before =========");
     }
 
     @Test
@@ -85,14 +91,32 @@ class PostRepositoryTest {
     }
 
     @Test
-    @Rollback(value = true)
     public void deletePostTest() {
-        postService.deletePost(1L);
+        postService.deletePost(1L, "1234");
+    }
+
+    @Test
+    @DisplayName("DB에 있는 데이터로 비밀번호 암호화 테스트")
+    public void dbPasswordEncodeTest() {
+        String enterPassword = "1234";
+        Long postId = 2L;
+        Optional<Post> post = postRepository.findPostById(postId);
+        if (post.isPresent()) {
+            if (passwordEncoder.matches(enterPassword, post.get().getPassword())) {
+                Long deletePostId = postRepository.deletePost(post.get());
+                List<Comment> comments = post.get().getComments();
+                for (Comment comment : comments) {
+                    commentRepository.deleteComment(comment);
+                }
+                log.debug("print deleted Post id : {}", deletePostId);
+            }
+        }
+        log.debug("print no match");
     }
 
     @AfterAll
     public void after() {
-        System.out.println("====== After ======");
+        log.debug("====== After ======");
     }
 
 }
