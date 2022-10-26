@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.NoResultException;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +28,14 @@ import lombok.extern.slf4j.Slf4j;
 public class PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public Long createPost(PostSaveRequestDto postSaveRequestDto) {
-        return postRepository.createPost(postSaveRequestDto.toEntity());
+        String encodePassword = passwordEncoder.encode(postSaveRequestDto.getPassword());
+        Post savePost = postSaveRequestDto.toEntity();
+        savePost.setPassword(encodePassword);
+        return postRepository.createPost(savePost);
     }
 
     public List<PostResponseDto> findAll(Integer offset, Integer limit) {
@@ -52,15 +60,23 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
-        Optional<Post> post = postRepository.findPostById(postId);
-        if (post.isPresent()) {
-            postRepository.deletePost(post.get());
-            List<Comment> comments = post.get().getComments();
-            for (Comment comment : comments) {
-                commentRepository.deleteComment(comment);
-            }
+    public Long deletePost(Long postId, String enterPassword) {
+        Optional<Post> oPost = postRepository.findPostById(postId);
+        log.debug("print enter password : {}", enterPassword);
+        if (!oPost.isPresent()) {
+            throw new NoResultException();
         }
+        Post post = oPost.get();
+        log.debug("print post password : {}", post.getPassword());
+        if (!passwordEncoder.matches(enterPassword, post.getPassword())) {
+            throw new BadCredentialsException("The password is wrong!");
+        }
+        Long deletePostId = postRepository.deletePost(post);
+        List<Comment> comments = post.getComments();
+        for (Comment comment : comments) {
+            commentRepository.deleteComment(comment);
+        }
+        return deletePostId;
     }
 
     public List<PostResponseDto> postsEntityToDto(List<Post> postsEntity) {

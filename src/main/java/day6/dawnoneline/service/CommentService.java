@@ -1,9 +1,14 @@
 package day6.dawnoneline.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.NoResultException;
+
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,17 +26,22 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
     public Long createComment(CommentRequestDto commentRequestDto) {
         Optional<Post> post = postRepository.findPostById(commentRequestDto.getPostId());
 
-        if (post.isPresent()) {
-            Comment comment = commentRequestDto.toEntity();
-            commentRepository.createComment(comment);
-            post.get().addComment(comment);
+        if (!post.isPresent()) {
+            throw new NoSuchElementException();
         }
-        return post.orElseThrow().getId();
+        String encodePassword = passwordEncoder.encode(commentRequestDto.getPassword());
+        Comment comment = commentRequestDto.toEntity();
+        comment.setPassword(encodePassword);
+        commentRepository.createComment(comment);
+        post.get().addComment(comment);
+
+        return post.get().getId();
     }
 
     public List<CommentResponseDto> findAllComments(Long postId) {
@@ -40,10 +50,18 @@ public class CommentService {
     }
 
     @Transactional
-    public Long deleteComment(Long commentId) {
-        Comment comment = commentRepository.findCommentById(commentId);
-        commentRepository.deleteComment(comment);
-        return comment.getId();
+    public Long deleteComment(Long commentId, String enterPassword) {
+        Optional<Comment> oComment = commentRepository.findCommentById(commentId);
+
+        if (!oComment.isPresent()) {
+            throw new NoResultException();
+        }
+        Comment comment = oComment.get();
+        if (!passwordEncoder.matches(enterPassword, comment.getPassword())) {
+            throw new BadCredentialsException("The password is wrong!");
+        }
+        Long deletedCommentId = commentRepository.deleteComment(comment);
+        return deletedCommentId;
     }
 
     public List<CommentResponseDto> commentsEntityToDto(List<Comment> commentsEntity) {

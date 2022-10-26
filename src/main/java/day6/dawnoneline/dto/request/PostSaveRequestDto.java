@@ -5,12 +5,14 @@ import day6.dawnoneline.domain.TimeStamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class PostSaveRequestDto extends TimeStamp {
     private String content;
     private String password;

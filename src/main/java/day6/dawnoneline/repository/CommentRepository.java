@@ -2,6 +2,7 @@ package day6.dawnoneline.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,12 +21,12 @@ public class CommentRepository {
         em.persist(comment);
     }
 
-    public Comment findCommentById(Long commentId) {
-        return em.createQuery("SELECT c FROM Comment c "
+    public Optional<Comment> findCommentById(Long commentId) {
+        return Optional.ofNullable(em.createQuery("SELECT c FROM Comment c "
                 + "WHERE c.id = :commentId "
                 + "AND c.deletedAt is null", Comment.class)
             .setParameter("commentId", commentId)
-            .getSingleResult();
+            .getSingleResult());
     }
 
     public List<Comment> findAll(Long postId) {
@@ -36,8 +37,9 @@ public class CommentRepository {
             .getResultList();
     }
 
-    public void deleteComment(Comment comment) {
+    public Long deleteComment(Comment comment) {
         comment.setDeletedAt(LocalDateTime.now());
+        return comment.getId();
     }
 
 }
