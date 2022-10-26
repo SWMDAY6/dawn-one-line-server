@@ -66,9 +66,8 @@ public class PostController {
 
     @DeleteMapping("/boards/posts/{postId}")
     @ApiOperation(value = "게시글 삭제")
-    public Long deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
-        return postId;
+    public Long deletePost(@PathVariable Long postId, @RequestParam String password) {
+        return postService.deletePost(postId, password);
     }
 
 }

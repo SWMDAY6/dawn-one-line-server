@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
+@AllArgsConstructor
 @Table(name = "post")
 public class Post extends TimeStamp {
 
@@ -52,28 +54,13 @@ public class Post extends TimeStamp {
         this.longitude = longitude;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setCoordinate(Double latitude, Double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public void setPassword(String encodepassword) {
+        this.password = encodepassword;
     }
 
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setPost(this);
-    }
-
-    public void addComments(Comment... comments) {
-        for (Comment comment : comments) {
-            this.addComment(comment);
-        }
     }
 
 }

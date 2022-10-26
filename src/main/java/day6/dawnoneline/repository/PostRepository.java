@@ -54,8 +54,9 @@ public class PostRepository {
             .getSingleResult());
     }
 
-    public void deletePost(Post post) {
+    public Long deletePost(Post post) {
         post.setDeletedAt(LocalDateTime.now());
+        return post.getId();
     }
 
 }

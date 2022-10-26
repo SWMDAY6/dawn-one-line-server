@@ -16,7 +16,6 @@ import lombok.Setter;
 public class PostResponseDto {
     private Long postId;
     private String content;
-    private String password;
     private Double latitude;
     private Double longitude;
     private LocalDateTime createdAt;
@@ -26,7 +25,6 @@ public class PostResponseDto {
     public PostResponseDto(Post post) {
         postId = post.getId();
         content = post.getContent();
-        password = post.getPassword();
         latitude = post.getLatitude();
         longitude = post.getLongitude();
         createdAt = post.getCreatedAt();
