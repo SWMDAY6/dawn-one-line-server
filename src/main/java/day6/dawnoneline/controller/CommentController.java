@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import day6.dawnoneline.dto.request.CommentRequestDto;
@@ -39,7 +40,7 @@ public class CommentController {
 
     @DeleteMapping("/posts/comments/{commentId}")
     @ApiOperation(value = "댓글 삭제")
-    public Long deleteComment(@PathVariable Long commentId) {
-        return commentService.deleteComment(commentId);
+    public Long deleteComment(@PathVariable Long commentId, @RequestParam String password) {
+        return commentService.deleteComment(commentId, password);
     }
 }

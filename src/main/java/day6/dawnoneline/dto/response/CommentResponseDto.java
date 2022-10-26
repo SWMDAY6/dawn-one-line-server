@@ -13,13 +13,11 @@ import lombok.Setter;
 public class CommentResponseDto {
 
     private String content;
-    private String password;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
     public CommentResponseDto(Comment comment) {
         content = comment.getContent();
-        password = comment.getPassword();
         createdAt = comment.getCreatedAt();
         modifiedAt = comment.getModifiedAt();
     }
